@@ -10,5 +10,6 @@
 @interface UIImage (JDCategories)
 
 - (UIImage *)imageWithColor:(UIColor *)color;
+- (UIImage *)imageConvertedToSize:(CGSize)size;
 
 @end

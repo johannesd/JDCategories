@@ -1,13 +1,13 @@
 //
-//  NSSet+Operations.m
+//  NSSet+JDCategory.m
 //
 //  Created by Johannes Dörr on 24.12.12.
 //
 //
 
-#import "NSSet+JDCategories.h"
+#import "NSSet+JDCategory.h"
 
-@implementation NSSet (JDCategories)
+@implementation NSSet (JDCategory)
 
 - (NSSet *)setByXorWithSet:(NSSet *)set
 {
