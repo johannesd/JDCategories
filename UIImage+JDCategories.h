@@ -11,5 +11,6 @@
 
 - (UIImage *)imageWithColor:(UIColor *)color;
 - (UIImage *)imageConvertedToSize:(CGSize)size;
+- (UIImage *)verticallyReflectedImage;
 
 @end
