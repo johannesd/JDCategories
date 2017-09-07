@@ -9,7 +9,8 @@
 
 @interface NSSet (JDCategories)
 
-- (NSSet*)setByXorWithSet:(NSSet *)set;
-- (NSSet*)setByDeletingFromSet:(NSSet *)set;
+- (NSSet *)setByXorWithSet:(NSSet *)set;
+- (NSSet *)setByDeletingFromSet:(NSSet *)set;
+- (NSSet *)setByIntersectingSet:(NSSet *)set;
 
 @end

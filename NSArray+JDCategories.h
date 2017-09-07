@@ -12,13 +12,9 @@
 - (NSArray *)copyWithDeepCopiedValues;
 - (NSMutableArray *)copyWithDeepCopiedAndMutableValues;
 - (BOOL)containsPrefix:(NSString *)prefix;
-
-@end
-
-
-@interface NSDictionary (JDCategories)
-
-- (NSDictionary *)copyWithDeepCopiedValues;
-- (NSMutableDictionary *)copyWithDeepCopiedAndMutableValues;
+- (BOOL)containsSuffix:(NSString *)suffix;
+- (NSArray *)arrayByRemovingObject:(id)object;
+- (NSDictionary *)groupItemsByKeyFromBlock:(id<NSCopying> (^)(id))keyBlock;
+- (NSDictionary *)groupItemsByKey:(NSString *)key;
 
 @end

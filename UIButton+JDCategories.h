@@ -13,5 +13,6 @@
 - (void)setImageForDisabledState:(UIImage *)image;
 - (void)setImageForHighlightedState:(UIImage *)image;
 - (void)setTitle:(NSString *)title;
+- (void)setAttributedTitle:(NSAttributedString *)title;
 
 @end

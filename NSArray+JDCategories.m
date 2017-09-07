@@ -5,7 +5,8 @@
 //
 
 #import "NSArray+JDCategories.h"
-
+#import <BlocksKit/NSArray+BlocksKit.h>
+#import "NSDictionary+JDCategories.h"
 
 @implementation NSArray (JDCategories)
 
@@ -65,83 +66,44 @@
     return FALSE;
 }
 
-@end
-
-
-@implementation NSDictionary (JDCategories)
-
-- (NSDictionary *)copyWithDeepCopiedValues
+- (BOOL)containsSuffix:(NSString *)suffix
 {
-    NSUInteger count = [self count];
-    id cObjects[count];
-    id cKeys[count];
-    
-    NSEnumerator *e = [self keyEnumerator];
-    unsigned int i = 0;
-    id thisKey;
-    while ((thisKey = [e nextObject]) != nil) {
-        id obj = [self objectForKey:thisKey];
-        
-        if ([obj respondsToSelector:@selector(copyWithDeepCopiedValues)])
-            cObjects[i] = [obj copyWithDeepCopiedValues];
-        else
-            cObjects[i] = [obj copy];
-        
-        if ([thisKey respondsToSelector:@selector(copyWithDeepCopiedValues)])
-            cKeys[i] = [thisKey copyWithDeepCopiedValues];
-        else
-            cKeys[i] = [thisKey copy];
-        
-        ++i;
+    for (id obj in self) {
+        if ([obj isKindOfClass:[NSString class]] && [obj hasSuffix:suffix]) {
+            return TRUE;
+        }
     }
-    
-    NSDictionary *ret = [NSDictionary dictionaryWithObjects:cObjects forKeys:cKeys count:count];
-    return ret;
+    return FALSE;
 }
 
-- (NSMutableDictionary *)copyWithDeepCopiedAndMutableValues
+- (NSArray *)arrayByRemovingObject:(id)object
 {
-    NSUInteger count = [self count];
-    id cObjects[count];
-    id cKeys[count];
-    
-    NSEnumerator *e = [self keyEnumerator];
-    unsigned int i = 0;
-    id thisKey;
-    while ((thisKey = [e nextObject]) != nil) {
-        id obj = [self objectForKey:thisKey];
-        
-        // Try to do a deep mutable copy, if this object supports it
-        if ([obj respondsToSelector:@selector(copyWithDeepCopiedAndMutableValues)]) {
-            cObjects[i] = [obj copyWithDeepCopiedAndMutableValues];
+    NSMutableArray *arr = [self mutableCopy];
+    [arr removeObject:object];
+    return [arr copy];
+}
+
+- (NSDictionary *)groupItemsByKeyFromBlock:(id<NSCopying> (^)(id))keyBlock
+{
+    return [self bk_reduce:[NSDictionary dictionary] withBlock:^id(NSDictionary *sum, NSObject *obj) {
+        id<NSCopying>value = keyBlock(obj);
+        if (value == nil) {
+            value = [NSNull null];
         }
-        
-        // Then try a shallow mutable copy, if the object supports that
-        else if ([obj respondsToSelector:@selector(mutableCopyWithZone:)]) {
-            cObjects[i] = [obj mutableCopy];
+        NSMutableArray *arr = [sum[value] mutableCopy];
+        if (arr == nil) {
+            arr = [NSMutableArray array];
         }
-        
-        // Next try to do a deep copy
-        else if ([obj respondsToSelector:@selector(copyWithDeepCopiedValues)]) {
-            cObjects[i] = [obj copyWithDeepCopiedValues];
-        }
-        
-        // If all else fails, fall back to an ordinary copy
-        else {
-            cObjects[i] = [obj copy];
-        }
-        
-        // I don't think mutable keys make much sense, so just do an ordinary copy
-        if ([thisKey respondsToSelector:@selector(copyWithDeepCopiedValues)])
-            cKeys[i] = [thisKey copyWithDeepCopiedValues];
-        else
-            cKeys[i] = [thisKey copy];
-        
-        ++i;
-    }
-    
-    NSMutableDictionary *ret = [NSMutableDictionary dictionaryWithObjects:cObjects forKeys:cKeys count:count];
-    return ret;
+        [arr addObject:obj];
+        return [sum dictionaryByAddingObject:arr forKey:value];
+    }];
+}
+
+- (NSDictionary *)groupItemsByKey:(NSString *)key
+{
+    return [self groupItemsByKeyFromBlock:^id<NSCopying>(id obj) {
+        return [((NSObject *)obj) valueForKey:key];
+    }];
 }
 
 @end

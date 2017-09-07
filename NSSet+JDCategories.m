@@ -33,4 +33,11 @@
     return result;
 }
 
+- (NSSet *)setByIntersectingSet:(NSSet *)set
+{
+    NSMutableSet *mutSelf = [self mutableCopy];
+    [mutSelf intersectSet:set];
+    return [mutSelf copy];
+}
+
 @end

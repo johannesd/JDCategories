@@ -29,4 +29,10 @@
     [self setTitle:title forState:UIControlStateNormal];
 }
 
+- (void)setAttributedTitle:(NSAttributedString *)title
+{
+    [self setAttributedTitle:title forState:UIControlStateNormal];
+    [self setAttributedTitle:title forState:UIControlStateHighlighted];
+}
+
 @end

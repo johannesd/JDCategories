@@ -8,6 +8,20 @@
 
 #import "NSObject+JDCategories.h"
 #import <BlocksKit/BlocksKit.h>
+#import <objc/runtime.h>
+
+
+extern void JDSwizzleMethods(Class class, SEL originalSelector, SEL overrideSelector)
+{
+    Method originalMethod = class_getInstanceMethod(class, originalSelector);
+    Method overrideMethod = class_getInstanceMethod(class, overrideSelector);
+    if (class_addMethod(class, originalSelector, method_getImplementation(overrideMethod), method_getTypeEncoding(overrideMethod))) {
+        class_replaceMethod(class, overrideSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
+    } else {
+        method_exchangeImplementations(originalMethod, overrideMethod);
+    }
+}
+
 
 @implementation NSObject (JDCategories)
 
