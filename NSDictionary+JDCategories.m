@@ -72,8 +72,10 @@
         
         if ([obj respondsToSelector:@selector(copyWithDeepCopiedValues)])
             cObjects[i] = [obj copyWithDeepCopiedValues];
-        else
+        else if ([obj respondsToSelector:@selector(copy)])
             cObjects[i] = [obj copy];
+        else
+            cObjects[i] = obj;
         
         if ([thisKey respondsToSelector:@selector(copyWithDeepCopiedValues)])
             cKeys[i] = [thisKey copyWithDeepCopiedValues];
@@ -115,8 +117,11 @@
         }
         
         // If all else fails, fall back to an ordinary copy
-        else {
+        else if ([obj respondsToSelector:@selector(copy)]) {
             cObjects[i] = [obj copy];
+        }
+        else {
+            cObjects[i] = obj;
         }
         
         // I don't think mutable keys make much sense, so just do an ordinary copy

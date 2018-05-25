@@ -19,8 +19,10 @@
         id obj = [self objectAtIndex:i];
         if ([obj respondsToSelector:@selector(copyWithDeepCopiedValues)])
             cArray[i] = [obj copyWithDeepCopiedValues];
-        else
+        else if ([obj respondsToSelector:@selector(copyWithZone:)])
             cArray[i] = [obj copy];
+        else
+            cArray[i] = obj;
     }
     
     NSArray *ret = [NSArray arrayWithObjects:cArray count:count];
@@ -46,10 +48,11 @@
         // Next try to do a deep copy
         else if ([obj respondsToSelector:@selector(copyWithDeepCopiedValues)])
             cArray[i] = [obj copyWithDeepCopiedValues];
-        
-        // If all else fails, fall back to an ordinary copy
-        else
+        else if ([obj respondsToSelector:@selector(copy)])
+            // If all else fails, fall back to an ordinary copy
             cArray[i] = [obj copy];
+        else
+            cArray[i] = obj;
     }
     
     NSMutableArray *ret = [NSMutableArray arrayWithObjects:cArray count:count];

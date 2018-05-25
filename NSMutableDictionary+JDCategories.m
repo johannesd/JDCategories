@@ -19,6 +19,9 @@
         else if ([self[key] isKindOfClass:[NSMutableDictionary class]]) {
             NSMutableDictionary *template = [templateDictionary[key] bk_associatedValueForKey:@"itemTemplateDictionary"];
             if (template != nil) {
+                if ([template isKindOfClass:[NSValue class]]) {
+                    template = [(NSValue *)template nonretainedObjectValue];
+                }
                 if ([template isKindOfClass:[NSMutableDictionary class]]) {
                     for (NSString *subKey in [self[key] keyEnumerator]) {
                         [self[key][subKey] deepUpdateWithTemplate:template];
